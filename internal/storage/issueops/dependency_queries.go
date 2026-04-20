@@ -42,13 +42,9 @@ func GetDependencyRecordsForIssuesInTx(ctx context.Context, tx *sql.Tx, issueIDs
 
 	result := make(map[string][]*types.Dependency)
 
-	var wispIDs, permIDs []string
-	for _, id := range issueIDs {
-		if IsActiveWispInTx(ctx, tx, id) {
-			wispIDs = append(wispIDs, id)
-		} else {
-			permIDs = append(permIDs, id)
-		}
+	wispIDs, permIDs, err := PartitionWispIDsInTx(ctx, tx, issueIDs)
+	if err != nil {
+		return nil, fmt.Errorf("get dependency records for issues: %w", err)
 	}
 
 	for _, pair := range []struct {
@@ -204,13 +200,9 @@ func GetBlockingInfoForIssuesInTx(ctx context.Context, tx *sql.Tx, issueIDs []st
 	}
 
 	// Partition into wisp and perm IDs for routing.
-	var wispIDs, permIDs []string
-	for _, id := range issueIDs {
-		if IsActiveWispInTx(ctx, tx, id) {
-			wispIDs = append(wispIDs, id)
-		} else {
-			permIDs = append(permIDs, id)
-		}
+	wispIDs, permIDs, partErr := PartitionWispIDsInTx(ctx, tx, issueIDs)
+	if partErr != nil {
+		return nil, nil, nil, fmt.Errorf("get blocking info: %w", partErr)
 	}
 
 	// Process wisp IDs against wisp_dependencies.
