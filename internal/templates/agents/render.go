@@ -13,9 +13,9 @@ import (
 type Profile string
 
 const (
-	// ProfileFull is the command-heavy profile for hookless agents (Codex, Factory, Mux, etc.).
+	// ProfileFull is the command-heavy profile for hookless agents such as Factory and Mux.
 	ProfileFull Profile = "full"
-	// ProfileMinimal is the pointer-only profile for hook-enabled agents (Claude, Gemini).
+	// ProfileMinimal is the pointer-only profile for hook-enabled agents and Codex.
 	ProfileMinimal Profile = "minimal"
 )
 

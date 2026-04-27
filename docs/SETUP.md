@@ -9,7 +9,7 @@ The `bd setup` command uses a **recipe-based architecture** to configure beads i
 
 ### `bd prime` as SSOT
 
-`bd prime` is the **single source of truth** for operational workflow commands. The beads section in each tool's instruction file provides a pointer to `bd prime` for hook-enabled agents (Claude, Gemini) or the full command reference for hookless agents (Factory, Codex, Mux).
+`bd prime` is the **single source of truth** for operational workflow commands. The beads section in each tool's instruction file provides a pointer to `bd prime` for hook-enabled agents (Claude, Gemini) and Codex, or the full command reference for other hookless agents (Factory, Mux).
 
 ### Profiles
 
@@ -17,12 +17,12 @@ Each integration uses one of two **profiles** that control how much content is w
 
 | Profile | Used By | Content |
 |---------|---------|---------|
-| `full` | Factory, Codex, Mux, OpenCode | Complete command reference, issue types, priorities, workflow |
-| `minimal` | Claude Code, Gemini CLI | Pointer to `bd prime`, quick reference only (~60% smaller) |
+| `full` | Factory, Mux, OpenCode | Complete command reference, issue types, priorities, workflow |
+| `minimal` | Claude Code, Gemini CLI, Codex | Pointer to `bd prime`, quick reference only (~60% smaller) |
 
-Hook-enabled agents (Claude, Gemini) use the `minimal` profile because `bd prime` injects full context at session start. Hookless agents need the `full` profile because their instruction file is their only source of instructions.
+Hook-enabled agents (Claude, Gemini) use the `minimal` profile because `bd prime` injects full context at session start. Codex also uses `minimal` so shared `AGENTS.md`/`CLAUDE.md` files stay concise; run `bd prime` manually when Codex needs the complete live command reference. Other hookless agents use the `full` profile because their instruction file is their only source of instructions.
 
-**Profile precedence:** If a file already has a `full` profile section and a `minimal` profile tool installs to the same file (e.g., via symlinks), the `full` profile is preserved to avoid information loss.
+**Profile precedence:** If a file already has a `full` profile section and a `minimal` profile tool installs to the same file (e.g., via symlinks), the `full` profile is usually preserved to avoid information loss. Codex is the exception: `bd setup codex` intentionally keeps shared `AGENTS.md`/`CLAUDE.md` files minimal.
 
 ### Built-in Recipes
 
@@ -172,7 +172,7 @@ bd setup codex
 
 ### What Gets Installed
 
-Creates or updates `AGENTS.md` with the beads integration section (same markers as Factory.ai).
+Creates or updates `AGENTS.md` with the minimal beads integration section (same markers as Factory.ai, different profile).
 
 ### Notes
 

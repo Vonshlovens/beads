@@ -2,16 +2,7 @@
 
 This project uses **bd (beads)** for issue tracking. The SessionStart hook loads the full command reference automatically; run `bd prime` to reload it mid-session.
 
-### Quick Reference
-
-```bash
-bd ready              # Find available work
-bd show <id>          # View issue details
-bd update <id> --claim  # Claim work
-bd close <id>         # Complete work
-```
-
-### Storage
+### Storage (overrides default bd guidance)
 
 - Storage is a **shared Dolt SQL server hosted on Railway**, reached over Tailscale at `railway-dolt:3306`.
 - **Writes are live.** Every `bd create/update/close` hits the remote server immediately. Other machines/agents see changes instantly.

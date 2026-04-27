@@ -3,10 +3,11 @@ package setup
 import "github.com/steveyegge/beads/internal/templates/agents"
 
 var codexIntegration = agentsIntegration{
-	name:         "Codex CLI",
-	setupCommand: "bd setup codex",
-	readHint:     "Codex reads AGENTS.md at the start of each run or session. Restart Codex if it is already running.",
-	profile:      agents.ProfileFull,
+	name:                  "Codex CLI",
+	setupCommand:          "bd setup codex",
+	readHint:              "Codex reads AGENTS.md at the start of each run or session. Restart Codex if it is already running.",
+	profile:               agents.ProfileMinimal,
+	allowProfileDowngrade: true,
 }
 
 var codexEnvProvider = defaultAgentsEnv

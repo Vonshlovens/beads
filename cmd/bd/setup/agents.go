@@ -37,11 +37,12 @@ type agentsEnv struct {
 }
 
 type agentsIntegration struct {
-	name         string
-	setupCommand string
-	readHint     string
-	docsURL      string
-	profile      agents.Profile // "full" or "minimal"; empty defaults to "full"
+	name                  string
+	setupCommand          string
+	readHint              string
+	docsURL               string
+	profile               agents.Profile // "full" or "minimal"; empty defaults to "full"
+	allowProfileDowngrade bool
 }
 
 func defaultAgentsEnv() agentsEnv {
@@ -99,11 +100,11 @@ func installAgents(env agentsEnv, integration agentsIntegration) error {
 	}
 
 	// Profile precedence: if the file already has a full profile and we're
-	// requesting minimal, preserve full to avoid information loss (e.g. when
-	// CLAUDE.md is a symlink to AGENTS.md and both Claude and Codex target it).
+	// requesting minimal, preserve full to avoid information loss unless the
+	// integration explicitly wants to keep shared instruction files concise.
 	if currentContent != "" && containsBeadsMarker(currentContent) {
 		existingProfile := existingBeadsProfile(currentContent)
-		if existingProfile == agents.ProfileFull && profile == agents.ProfileMinimal {
+		if existingProfile == agents.ProfileFull && profile == agents.ProfileMinimal && !integration.allowProfileDowngrade {
 			_, _ = fmt.Fprintf(env.stdout, "  ℹ File already has full profile; preserving (higher-information) content\n")
 			profile = agents.ProfileFull
 		}
@@ -181,7 +182,7 @@ func checkAgents(env agentsEnv, integration agentsIntegration) error {
 	meta := agents.ParseMarker(line)
 
 	checkProfile := profile
-	if profile == agents.ProfileMinimal && existingProf == agents.ProfileFull {
+	if profile == agents.ProfileMinimal && existingProf == agents.ProfileFull && !integration.allowProfileDowngrade {
 		// Accept full profile as current when a minimal integration targets the same
 		// file (typically via symlinks like CLAUDE.md -> AGENTS.md).
 		checkProfile = agents.ProfileFull
