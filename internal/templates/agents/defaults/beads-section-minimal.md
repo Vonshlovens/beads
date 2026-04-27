@@ -1,6 +1,6 @@
-## Beads Issue Tracker
+## Beads & Session Completion
 
-This project uses **bd (beads)** for issue tracking. Run `bd prime` to see full workflow context and commands.
+This project uses **bd (beads)** for issue tracking. Hook-enabled agents load the full command reference automatically; run `bd prime` to reload it mid-session.
 
 ### Quick Reference
 
@@ -10,6 +10,14 @@ bd show <id>          # View issue details
 bd update <id> --claim  # Claim work
 bd close <id>         # Complete work
 ```
+
+### Storage
+
+- Storage is a shared remote Dolt SQL server, configured with `BEADS_DOLT_*` environment variables.
+- Writes are live. Every `bd create/update/close` reaches the remote database immediately.
+- Do NOT run `bd dolt push` or `bd dolt pull`. There is no separate beads sync step in remote-server mode.
+- `BD_DOLT_AUTO_PUSH=false` and `backup.enabled: false` are intentional for this workflow.
+- "auto-push disabled" messaging does not mean local-only; it means pushing would be redundant.
 
 ### Rules
 
@@ -25,11 +33,10 @@ bd close <id>         # Complete work
 
 1. **File issues for remaining work** - Create issues for anything that needs follow-up
 2. **Run quality gates** (if code changed) - Tests, linters, builds
-3. **Update issue status** - Close finished work, update in-progress items
-4. **PUSH TO REMOTE** - This is MANDATORY:
+3. **Update issue status** - Close finished work, update in-progress items. bd writes are already live on the remote server.
+4. **PUSH CODE TO REMOTE** - This is MANDATORY:
    ```bash
    git pull --rebase
-   bd dolt push
    git push
    git status  # MUST show "up to date with origin"
    ```

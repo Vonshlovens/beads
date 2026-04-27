@@ -65,13 +65,16 @@ func createConfigYaml(beadsDir string, noDbMode bool, prefix string) error {
 #     - ~/beads-planning  # Personal planning repo
 #     - ~/work-planning   # Work planning repo
 
-# JSONL backup (periodic export for off-machine recovery)
-# Auto-enabled when a git remote exists. Override explicitly:
-# backup:
-#   enabled: false     # Disable auto-backup entirely
-#   interval: 15m      # Minimum time between auto-exports
-#   git-push: false    # Disable git push (export locally only)
-#   git-repo: ""       # Separate git repo for backups (default: project repo)
+# Remote Dolt SQL server workflow
+# Writes go directly to the remote database, so local auto-push and JSONL backup
+# are intentionally disabled. Do not re-enable these unless this project moves
+# back to local Dolt storage with explicit push/pull sync.
+dolt:
+#  shared-server: true
+  auto-push: false
+
+backup:
+  enabled: false
 
 # Integration settings (access with 'bd config get/set')
 # These are stored in the database, not in this file:
@@ -127,8 +130,7 @@ bd show <issue-id>
 bd update <issue-id> --claim
 bd update <issue-id> --status done
 
-# Sync with Dolt remote
-bd dolt push
+# Work is written directly to the configured Dolt SQL server.
 ` + "```" + `
 
 ### Working with Issues

@@ -81,6 +81,23 @@ func TestRenderSectionMinimal(t *testing.T) {
 	}
 }
 
+func TestRenderSectionRemoteServerWorkflow(t *testing.T) {
+	for _, profile := range []Profile{ProfileFull, ProfileMinimal} {
+		t.Run(string(profile), func(t *testing.T) {
+			section := RenderSection(profile)
+			if !strings.Contains(section, "remote") {
+				t.Errorf("%s profile should mention remote storage", profile)
+			}
+			if !strings.Contains(section, "Do NOT run `bd dolt push`") {
+				t.Errorf("%s profile should forbid redundant bd dolt push", profile)
+			}
+			if strings.Contains(section, "\n   bd dolt push\n") {
+				t.Errorf("%s profile should not include bd dolt push as a session-close command", profile)
+			}
+		})
+	}
+}
+
 func TestRenderSectionHashStability(t *testing.T) {
 	// Same profile should produce same hash
 	s1 := RenderSection(ProfileFull)
