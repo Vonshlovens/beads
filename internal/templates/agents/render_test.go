@@ -128,7 +128,7 @@ func TestRenderSectionFullBackcompat(t *testing.T) {
 		"bd close",
 		"bd ready",
 		"discovered-from",
-		"Session Completion",
+		"Session close protocol",
 	} {
 		if !strings.Contains(legacy, want) {
 			t.Fatalf("test precondition: legacy section missing %q", want)

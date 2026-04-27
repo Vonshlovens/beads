@@ -439,7 +439,7 @@ func TestRoundTripAddRemoveLeavesNoBeadsContent(t *testing.T) {
 	if !strings.Contains(withBeads, "BEGIN BEADS INTEGRATION") {
 		t.Fatal("beads markers should be present after adding section")
 	}
-	if !strings.Contains(withBeads, "Session Completion") {
+	if !strings.Contains(withBeads, "Session close protocol") {
 		t.Fatal("session-completion should be present inside beads section")
 	}
 
@@ -453,7 +453,7 @@ func TestRoundTripAddRemoveLeavesNoBeadsContent(t *testing.T) {
 	if strings.Contains(cleaned, "END BEADS INTEGRATION") {
 		t.Error("end marker should not remain after removal")
 	}
-	if strings.Contains(cleaned, "Session Completion") {
+	if strings.Contains(cleaned, "Session close protocol") {
 		t.Error("session-completion should not remain after removal (must be inside markers)")
 	}
 	if strings.Contains(cleaned, "bd ready") {
